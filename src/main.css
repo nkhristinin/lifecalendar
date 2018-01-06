@@ -1,0 +1,53 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
+    "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  text-align: center;
+  color: #293c4b;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+img {
+  margin: 20px 0;
+  max-width: 200px;
+}
+
+.calendar {
+  max-width: 800px;
+  margin-top: 100px;
+  margin: auto;
+}
+
+.calendar__year {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.calendar__week {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #000;
+  margin-right: 5px;
+}
+
+.calendar__week--filled {
+    background: lightcoral;
+    border-color: lightcoral;
+}
+
+calendar__week::last-child {
+  margin-right: 0;
+}
