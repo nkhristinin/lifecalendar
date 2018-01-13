@@ -4,7 +4,7 @@ import Date exposing (Date)
 import Task
 import Dict
 import Html exposing (Html, text, div, h1, img, button, input, label, select, option)
-import Html.Attributes exposing (src, class, classList, type_, value)
+import Html.Attributes exposing (src, class, classList, type_, value, placeholder)
 import Html.Events exposing (..)
 import Dropdown
 
@@ -163,12 +163,10 @@ update msg model =
 --         ]
 
 
-viewField : Model -> String -> (String -> Msg) -> Html Msg
-viewField model labelText msg =
-    label []
-        [ text labelText
-        , input [ onInput msg ] []
-        ]
+viewField : Model -> String -> String -> (String -> Msg) -> Html Msg
+viewField model placehold className msg =
+        input [ onInput msg , placeholder placehold, class ("input " ++ className)] []
+        
 
 
 viewWeek : Model -> Week -> Html Msg
@@ -195,11 +193,12 @@ viewCalendar model =
 view : Model -> Html Msg
 view model =
     div []
-        [ viewField model "Year:" SetBirthYear
-        , viewField model "Day:" SetBirthDay
-        , Html.map DropdownMsg (Dropdown.view model.dropdownModel <| Dict.keys months)
-        , button [ onClick ShowCalendar ] [ text "Show" ]
-        , div [] [ text (toString model.dateNow) ]
+        [ text "Hello, I am Nikita and I was born "
+        , viewField model "1991" "input--year" SetBirthYear
+        , text ","
+        , viewField model "30" "input--day" SetBirthDay
+        , text " "
+        , Html.map DropdownMsg (Dropdown.view model.dropdownModel  "August"  (Dict.keys months))
         , viewCalendar model
         ]
 

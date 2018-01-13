@@ -9,11 +9,15 @@ html {
 }
 
 body {
-  font-family: "Catamaran", sans-serif;
   margin: 0;
   text-align: center;
   color: #293c4b;
   font-size: 30px;
+}
+
+body,
+* {
+  font-family: "Cutive Mono", monospace;
 }
 
 h1 {
@@ -41,7 +45,7 @@ img {
 .calendar__week {
   width: 10px;
   height: 10px;
-  border: 1px solid #000;
+  border: 1px solid #2c3e50;
   margin-right: 5px;
   transition: all 0.3s ease-in-out;
   will-change: background;
@@ -56,6 +60,23 @@ calendar__week::last-child {
   margin-right: 0;
 }
 
+.input {
+  font-size: 30px;
+  display: inline-block;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #2c3e50;
+  padding: 0;
+  margin: 0;
+}
+
+.input--year {
+  width: 74px;
+}
+
+.input--day {
+  width: 37px;
+}
 
 .dropdown {
   font-size: 30px;
@@ -63,11 +84,11 @@ calendar__week::last-child {
   position: relative;
   outline: none;
   cursor: pointer;
+  border-bottom: 2px solid #2c3e50;
 }
 
 .dropdown__panel {
   z-index: 2;
-  background: white;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -76,39 +97,18 @@ calendar__week::last-child {
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-top: 10px;
   border: none;
   border-radius: 0;
   font-size: 30px;
-  background: white;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   outline: 0;
   transition: opacity 0.3s linear;
   transition: all 0.3s linear;
-  /*   font-weight: bold; */
-}
-
-.dropdown__panel::before {
-  transform: translateX(0);
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  border-left: 1px solid black;
-  transition: all 0.3s linear;
-}
-
-.dropdown__panel::after {
-  transform: translateX(0);
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  border-left: 1px solid black;
-  transition: transform 0.3s linear;
+  /* border-left: 1px solid #2c3e50;
+  border-right: 1px solid #2c3e50; */
 }
 
 .dropdown__selected-text {
@@ -125,24 +125,19 @@ calendar__week::last-child {
   display: flex;
   flex-direction: column;
   justify-content: left;
-  border-top: 0;
-  border-bottom: 0;
-  background: white;
   transition: opacity 0.3s linear;
-}
-
-.dropdown__panel--visible::before {
-  transform: translateX(-20px);
-}
-.dropdown__panel--visible::after {
-  transform: translateX(20px);
 }
 
 .dropdown__item {
   font-size: 24px;
   cursor: pointer;
+  padding: 0 20px;
+  margin-bottom: 2px;
+  background: #2c3e50;
+  color: white;
 }
 
 .dropdown__item:hover {
   font-weight: bold;
+  transform: scale(1.05);
 }

@@ -64,8 +64,8 @@ viewDropdownItem item =
         [ text item ]
 
 
-view : Model -> List String -> Html Msg
-view model values =
+view : Model -> String -> List String -> Html Msg
+view model defaultText values  =
     div
         [ class "dropdown"
         , tabindex 0
@@ -73,7 +73,7 @@ view model values =
         , onClick open
         ]
         [ div [ class "dropdown__selected-text" ]
-            [ text (model.selectedValue |> Maybe.withDefault "Hello") ]
+            [ text (model.selectedValue |> Maybe.withDefault defaultText) ]
         , ul [ class "dropdown__panel", classList [ ( "dropdown__panel--visible", model.isOpen ) ] ]
             (List.map viewDropdownItem values)
         ]
