@@ -2,9 +2,11 @@ module Main exposing (..)
 
 import Date exposing (Date)
 import Task
+import Dict
 import Html exposing (Html, text, div, h1, img, button, input, label, select, option)
 import Html.Attributes exposing (src, class, classList, type_, value)
 import Html.Events exposing (..)
+import Dropdown
 
 
 ---- MODEL ----
@@ -23,6 +25,7 @@ type alias Model =
     , birthDay : Maybe Int
     , weeks : Int
     , dateNow : Maybe Date
+    , dropdownModel : Dropdown.Model
     }
 
 
@@ -40,6 +43,7 @@ init =
       , birthDay = Nothing
       , weeks = 0
       , dateNow = Nothing
+      , dropdownModel = Dropdown.initialModel
       }
     , Task.perform GetDateNow Date.now
     )
@@ -50,21 +54,20 @@ inYear =
 
 
 months =
-    [ 
-    ("", "")
-     ,( "1", "January" )
-    , ( "2", "February" )
-    , ( "3", "March" )
-    , ( "4", "April" )
-    , ( "5", "May" )
-    , ( "6", "June" )
-    , ( "7", "July" )
-    , ( "8", "August" )
-    , ( "9", "September" )
-    , ( "10", "October" )
-    , ( "11", "November" )
-    , ( "12", "December" )
-    ]
+    Dict.fromList
+        [ ( "January", 1 )
+        , ( "February", 2 )
+        , ( "March", 3 )
+        , ( "April", 4 )
+        , ( "May", 5 )
+        , ( "June", 6 )
+        , ( "July", 7 )
+        , ( "August", 8 )
+        , ( "September", 9 )
+        , ( "October", 10 )
+        , ( "November", 11 )
+        , ( "December", 12 )
+        ]
 
 
 split : Int -> List a -> List (List a)
@@ -87,6 +90,7 @@ type Msg
     | SetBirthMonth String
     | SetBirthDay String
     | ShowCalendar
+    | DropdownMsg Dropdown.Msg
 
 
 toInt stringValue =
@@ -136,17 +140,27 @@ update msg model =
                 Nothing ->
                     ( { model | weeks = 0 }, Cmd.none )
 
+        DropdownMsg msg ->
+            let
+                dropdownModel =
+                    Dropdown.update msg model.dropdownModel
+            in
+                { model
+                    | dropdownModel = dropdownModel
+                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") months)
+                }
+                    |> update ShowCalendar
+
 
 
 ---- VIEW ----
-
-viewSelect : Model -> String -> (String -> Msg) -> List (String, String) -> Html Msg
-viewSelect model labelText msg options =
-    label []
-        [ text labelText
-        , select [ onInput msg ]
-            (List.map (\x -> (option [ value (Tuple.first x) ] [ text (Tuple.second x) ])) options)
-        ]
+-- viewSelect : Model -> String -> (String -> Msg) -> List (String, String) -> Html Msg
+-- viewSelect model labelText msg options =
+--     label []
+--         [ text labelText
+--         , select [ onInput msg ]
+--             (List.map (\x -> (option [ value (Tuple.first x) ] [ text (Tuple.second x) ])) options)
+--         ]
 
 
 viewField : Model -> String -> (String -> Msg) -> Html Msg
@@ -182,8 +196,8 @@ view : Model -> Html Msg
 view model =
     div []
         [ viewField model "Year:" SetBirthYear
-        , viewSelect model "Month:" SetBirthMonth months
         , viewField model "Day:" SetBirthDay
+        , Html.map DropdownMsg (Dropdown.view model.dropdownModel <| Dict.keys months)
         , button [ onClick ShowCalendar ] [ text "Show" ]
         , div [] [ text (toString model.dateNow) ]
         , viewCalendar model
