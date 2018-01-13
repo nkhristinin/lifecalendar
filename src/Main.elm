@@ -3,7 +3,7 @@ module Main exposing (..)
 import Date exposing (Date)
 import Task
 import Dict
-import Html exposing (Html, text, div, h1, img, button, input, label, select, option)
+import Html exposing (Html, text, div, h1, img, button, input, label, select, option, p, span, br)
 import Html.Attributes exposing (src, class, classList, type_, value, placeholder)
 import Html.Events exposing (..)
 import Dropdown
@@ -37,7 +37,7 @@ weekList year =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { yearsCount = 80
+    ( { yearsCount = 70
       , birthYear = Nothing
       , birthMonth = Nothing
       , birthDay = Nothing
@@ -52,22 +52,20 @@ init =
 inYear =
     52
 
-
 months =
-    Dict.fromList
-        [ ( "January", 1 )
-        , ( "February", 2 )
-        , ( "March", 3 )
-        , ( "April", 4 )
-        , ( "May", 5 )
-        , ( "June", 6 )
-        , ( "July", 7 )
-        , ( "August", 8 )
-        , ( "September", 9 )
-        , ( "October", 10 )
-        , ( "November", 11 )
-        , ( "December", 12 )
-        ]
+    [ ( "January", 1 )
+    , ( "February", 2 )
+    , ( "March", 3 )
+    , ( "April", 4 )
+    , ( "May", 5 )
+    , ( "June", 6 )
+    , ( "July", 7 )
+    , ( "August", 8 )
+    , ( "September", 9 )
+    , ( "October", 10 )
+    , ( "November", 11 )
+    , ( "December", 12 )
+    ]
 
 
 split : Int -> List a -> List (List a)
@@ -103,7 +101,7 @@ getWeeks : Date -> Int -> Int -> Int -> Int
 getWeeks now year month day =
     let
         yearWeeks =
-            ((Date.year now) - year) * 52
+            ((Date.year now) - year) * inYear
 
         monthWeeks =
             (month - 1) * 4
@@ -147,7 +145,7 @@ update msg model =
             in
                 { model
                     | dropdownModel = dropdownModel
-                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") months)
+                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") (Dict.fromList months))
                 }
                     |> update ShowCalendar
 
@@ -165,8 +163,7 @@ update msg model =
 
 viewField : Model -> String -> String -> (String -> Msg) -> Html Msg
 viewField model placehold className msg =
-        input [ onInput msg , placeholder placehold, class ("input " ++ className)] []
-        
+    input [ onInput msg, placeholder placehold, class ("input " ++ className) ] []
 
 
 viewWeek : Model -> Week -> Html Msg
@@ -193,12 +190,21 @@ viewCalendar model =
 view : Model -> Html Msg
 view model =
     div []
-        [ text "Hello, I am Nikita and I was born "
-        , viewField model "1991" "input--year" SetBirthYear
-        , text ","
-        , viewField model "30" "input--day" SetBirthDay
-        , text " "
-        , Html.map DropdownMsg (Dropdown.view model.dropdownModel  "August"  (Dict.keys months))
+        [ p []
+            [ text ("Imagine that the average life expectancy is " ++ (toString model.yearsCount) ++ " years. This is approximately " ++ (toString (model.yearsCount*inYear)) ++ " weeks.")
+            , text "You was born "
+            , viewField model "1991" "input--year" SetBirthYear
+            , text ", "
+            , viewField model "30" "input--day" SetBirthDay
+            , text " "
+            , Html.map DropdownMsg (Dropdown.view model.dropdownModel "August" (List.map Tuple.first months))
+            , text "."
+            ]
+        , p [ classList [ ("count-weeks--visible", model.weeks > 0 ), ( "count-weeks", True ) ]]
+            [  text ("You live already " ++ (toString model.weeks) ++ " weeks. Left "++ (toString <| (model.yearsCount*inYear - model.weeks))  ++" weeks.")
+            , br [][]
+            , text  "A lot of? "
+            ]
         , viewCalendar model
         ]
 

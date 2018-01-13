@@ -63,6 +63,15 @@ viewDropdownItem item =
     li [ class "dropdown__item", onClickItem <| SelectItem <| Just item ]
         [ text item ]
 
+viewSelectedText: Model -> String-> Html Msg
+viewSelectedText model defaultText =
+    let isSelected =  
+        case model.selectedValue of
+            Just title -> True
+            Nothing -> False
+    in
+             div [ class "dropdown__title", classList [("dropdown__title--selected", isSelected)] ]
+            [ text (model.selectedValue |> Maybe.withDefault defaultText) ]
 
 view : Model -> String -> List String -> Html Msg
 view model defaultText values  =
@@ -70,10 +79,10 @@ view model defaultText values  =
         [ class "dropdown"
         , tabindex 0
         , onBlur close
+        , onFocus open
         , onClick open
         ]
-        [ div [ class "dropdown__selected-text" ]
-            [ text (model.selectedValue |> Maybe.withDefault defaultText) ]
+        [ viewSelectedText model defaultText
         , ul [ class "dropdown__panel", classList [ ( "dropdown__panel--visible", model.isOpen ) ] ]
             (List.map viewDropdownItem values)
         ]
