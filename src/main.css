@@ -9,14 +9,14 @@ html {
 }
 
 body {
-  max-width: 900px;
+  max-width: 884px;
   margin: auto;
   color: #293c4b;
   font-size: 30px;
   padding-top: 40px;
   padding-bottom: 100px;
   padding: 40px 20px 100px 20px;
-  counter-reset: year;
+  counter-reset: year -1;
   line-height: 1.2;
 }
 
@@ -35,12 +35,12 @@ body,
 }
 
 .calendar {
+  position: relative;
   padding-top: 40px;
-  padding-left: 20px;
   margin: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .calendar__year {
@@ -53,8 +53,8 @@ body,
   position: absolute;
   left: -20px;
   font-size: 10px;
-  counter-increment: year;
   content: counter(year);
+  counter-increment: year;
 }
 
 .count-weeks {
@@ -95,11 +95,10 @@ body,
   }
 }
 
-
-@media (min-width: 660px) { 
-    .calendar {
-        width: 630px;
-    }
+@media (min-width: 660px) and (max-width: 930px) {
+  .calendar {
+    width: 630px;
+  }
 }
 
 .calendar__week--filled {
@@ -230,8 +229,52 @@ calendar__week::last-child {
     width: 28px;
   }
 
-  .dropdown__item { 
+  .dropdown__item {
     font-size: 16px;
     padding: 0 10px;
+  }
+}
+
+.directions {
+  left: 0;
+  top: 8px;
+  font-size: 20px;
+  line-height: 1;
+  position: absolute;
+}
+
+.direction {
+  position: relative;
+}
+
+.direction__week::after {
+  content: " ";
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  right: -45px;
+  top: 2px;
+  background: url("/direction-right.svg") no-repeat bottom center;
+}
+
+.direction__years {
+  transform: rotate(90deg);
+}
+.directions {
+  position: absolute;
+}
+
+@media (max-width: 930px) {
+  .directions {
+    left: 6px;
+    top: -10px;
+    right: auto;
+    font-size: 14px;
+  }
+  .direction__week::after {
+    height: 14px;
+    width: 100%;
+    right: -35px;
+    top: 1px;
   }
 }

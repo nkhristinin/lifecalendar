@@ -156,13 +156,6 @@ update msg model =
 
 
 ---- VIEW ----
--- viewSelect : Model -> String -> (String -> Msg) -> List (String, String) -> Html Msg
--- viewSelect model labelText msg options =
---     label []
---         [ text labelText
---         , select [ onInput msg ]
---             (List.map (\x -> (option [ value (Tuple.first x) ] [ text (Tuple.second x) ])) options)
---         ]
 
 
 viewField : Model -> String -> String -> (String -> Msg) -> Html Msg
@@ -188,7 +181,15 @@ viewCalendar model =
             |> List.map (\week -> ({ week | filled = week.index <= model.weeks }))
             |> split inYear
             |> List.map (\year -> viewYear model year)
+            |> List.append [viewDirections]
         )
+
+
+viewDirections : Html Msg
+viewDirections =
+    div [ class "directions" ]
+        [ div [ class "direction direction__week" ] [ text "Weeks" ]
+        ]
 
 
 view : Model -> Html Msg
@@ -212,11 +213,10 @@ view model =
             ]
         , p [ classList [ ( "count-weeks--visible", model.weeks > 0 ), ( "count-weeks", True ) ] ]
             [ text "You've already lived for "
-            , b [] [text (toString model.weeks)]
-            , text  " weeks. Left "
-            , b [][text (toString <| (model.yearsCount * inYear - model.weeks))]
+            , b [] [ text (toString model.weeks) ]
+            , text " weeks. Left "
+            , b [] [ text (toString <| (model.yearsCount * inYear - model.weeks)) ]
             , text " weeks."
-            , br [] []
             , text "Is it a lot?"
             ]
         , viewCalendar model
