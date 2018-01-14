@@ -30,11 +30,11 @@ initialModel =
 
 ---- UPDATE -----
 
-
+open: Msg
 open =
     SetOpen True
 
-
+close: Msg
 close =
     SetOpen False
 

@@ -114,8 +114,6 @@ body,
   content: " ";
   left: 50%;
   top: 50%;
-  /* will-change: opacity;   
-    transition: opacity 0.3s ease-in-out; */
   transform: translate(-50%, -50%);
 }
 

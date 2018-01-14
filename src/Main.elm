@@ -32,7 +32,7 @@ type alias Model =
 weekList : Int -> List Week
 weekList year =
     List.map (\x -> Week x False)
-        (List.range 1 (year * inYear))
+        (List.range 1 (year * weekInYear))
 
 
 init : ( Model, Cmd Msg )
@@ -48,11 +48,11 @@ init =
     , Task.perform GetDateNow Date.now
     )
 
-
-inYear =
+weekInYear: Int
+weekInYear =
     52
 
-
+months: List (String, Int)
 months =
     [ ( "January", 1 )
     , ( "February", 2 )
@@ -92,6 +92,7 @@ type Msg
     | DropdownMsg Dropdown.Msg
 
 
+toInt: String -> Maybe Int
 toInt stringValue =
     stringValue
         |> String.toInt
@@ -102,7 +103,7 @@ getWeeks : Date -> Int -> Int -> Int -> Int
 getWeeks now year month day =
     let
         yearWeeks =
-            ((Date.year now) - year) * inYear
+            ((Date.year now) - year) * weekInYear
 
         monthWeeks =
             (month - 1) * 4
@@ -179,7 +180,7 @@ viewCalendar model =
     div [ class "calendar" ]
         (weekList model.yearsCount
             |> List.map (\week -> ({ week | filled = week.index <= model.weeks }))
-            |> split inYear
+            |> split weekInYear
             |> List.map (\year -> viewYear model year)
             |> List.append [viewDirections]
         )
@@ -199,7 +200,7 @@ view model =
             [ text ("Imagine that the average life expectancy is ")
             , b [] [ text (toString model.yearsCount) ]
             , text (" years. This is approximately ")
-            , b [] [ text (toString (model.yearsCount * inYear)) ]
+            , b [] [ text (toString (model.yearsCount * weekInYear)) ]
             , text " weeks."
             ]
         , p []
@@ -215,7 +216,7 @@ view model =
             [ text "You've already lived for "
             , b [] [ text (toString model.weeks) ]
             , text " weeks. Left "
-            , b [] [ text (toString <| (model.yearsCount * inYear - model.weeks)) ]
+            , b [] [ text (toString <| (model.yearsCount * weekInYear - model.weeks)) ]
             , text " weeks."
             , text "Is it a lot?"
             ]
