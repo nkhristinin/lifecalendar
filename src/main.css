@@ -15,7 +15,7 @@ body {
   font-size: 30px;
   padding-top: 40px;
   padding-bottom: 100px;
-  padding: 40px 20px 100px 20px;
+  padding: 40px 20px 0 20px;
   counter-reset: year -1;
   line-height: 1.2;
 }
@@ -275,4 +275,10 @@ calendar__week::last-child {
     right: -35px;
     top: 1px;
   }
+}
+
+
+footer {
+    padding-top: 40px;
+    font-size: 16px;
 }
