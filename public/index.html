@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-76113307-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-76113307-2');
+    </script>
+
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,16 +24,21 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <meta name="theme-color" content="#ffffff">
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
-     <!--
+    <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
     <title>Life calendar</title>
+
+    <meta name="description" content="Life calendar provides you opportunity think about life's limit.">
+    <meta property="og:image" content="%PUBLIC_URL%/logo.png" />
 </head>
+
 <body>
     <noscript>
         You need to enable JavaScript to run this app.
     </noscript>
     <div id="root"></div>
 </body>
+
 </html>
