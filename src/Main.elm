@@ -3,7 +3,7 @@ module Main exposing (..)
 import Date exposing (Date)
 import Task
 import Dict
-import Html exposing (Html, text, div, h1, img, button, input, label, select, option, p, span, br)
+import Html exposing (Html, text, div, h1, img, button, input, label, select, option, p, span, br, b)
 import Html.Attributes exposing (src, class, classList, type_, value, placeholder)
 import Html.Events exposing (..)
 import Dropdown
@@ -51,6 +51,7 @@ init =
 
 inYear =
     52
+
 
 months =
     [ ( "January", 1 )
@@ -119,8 +120,11 @@ update msg model =
             ( { model | dateNow = Just date }, Cmd.none )
 
         SetBirthYear year ->
-            { model | birthYear = toInt year }
-                |> update ShowCalendar
+            if (String.length year) == 4 then
+                { model | birthYear = toInt year }
+                    |> update ShowCalendar
+            else
+                ( model, Cmd.none )
 
         SetBirthMonth month ->
             { model | birthMonth = toInt month }
@@ -191,19 +195,29 @@ view : Model -> Html Msg
 view model =
     div []
         [ p []
-            [ text ("Imagine that the average life expectancy is " ++ (toString model.yearsCount) ++ " years. This is approximately " ++ (toString (model.yearsCount*inYear)) ++ " weeks.")
-            , text "You was born "
-            , viewField model "1991" "input--year" SetBirthYear
-            , text ", "
+            [ text ("Imagine that the average life expectancy is ")
+            , b [] [ text (toString model.yearsCount) ]
+            , text (" years. This is approximately ")
+            , b [] [ text (toString (model.yearsCount * inYear)) ]
+            , text " weeks."
+            ]
+        , p []
+            [ text "You were born "
             , viewField model "30" "input--day" SetBirthDay
-            , text " "
+            , text " of "
             , Html.map DropdownMsg (Dropdown.view model.dropdownModel "August" (List.map Tuple.first months))
+            , text ", "
+            , viewField model "1991" "input--year" SetBirthYear
             , text "."
             ]
-        , p [ classList [ ("count-weeks--visible", model.weeks > 0 ), ( "count-weeks", True ) ]]
-            [  text ("You live already " ++ (toString model.weeks) ++ " weeks. Left "++ (toString <| (model.yearsCount*inYear - model.weeks))  ++" weeks.")
-            , br [][]
-            , text  "A lot of? "
+        , p [ classList [ ( "count-weeks--visible", model.weeks > 0 ), ( "count-weeks", True ) ] ]
+            [ text "You've already lived for "
+            , b [] [text (toString model.weeks)]
+            , text  " weeks. Left "
+            , b [][text (toString <| (model.yearsCount * inYear - model.weeks))]
+            , text " weeks."
+            , br [] []
+            , text "Is it a lot?"
             ]
         , viewCalendar model
         ]

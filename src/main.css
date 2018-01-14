@@ -11,13 +11,22 @@ html {
 body {
   max-width: 900px;
   margin: auto;
-  text-align: center;
   color: #293c4b;
   font-size: 30px;
   padding-top: 40px;
   padding-bottom: 100px;
+  padding: 40px 20px 100px 20px;
   counter-reset: year;
   line-height: 1.2;
+}
+
+@media (max-width: 930px) {
+  body {
+    font-size: 20px;
+    padding-top: 0;
+    line-height: 1.3;
+    text-align: left;
+  }
 }
 
 body,
@@ -25,17 +34,8 @@ body,
   font-family: "Cutive Mono", monospace;
 }
 
-h1 {
-  font-size: 30px;
-}
-
-img {
-  margin: 20px 0;
-  max-width: 200px;
-}
-
 .calendar {
-  padding-top: 60px;
+  padding-top: 40px;
   padding-left: 20px;
   margin: auto;
   display: flex;
@@ -59,19 +59,47 @@ img {
 
 .count-weeks {
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  height: 0;
+  transform: translateX(-1000px);
+  transition: all 0.3s ease-in-out;
 }
 
 .count-weeks--visible {
   opacity: 1;
+  height: auto;
+  transform: translateX(0);
 }
-  
+
 .calendar__week {
   width: 11px;
   height: 11px;
   border: 1px solid #2c3e50;
   margin-right: 6px;
   position: relative;
+}
+
+@media (max-width: 930px) {
+  .calendar {
+    width: 320px;
+    padding-left: 6px;
+    padding-top: 20px;
+  }
+  .calendar__year {
+    flex-wrap: wrap;
+  }
+  .calendar__week {
+    width: 6px;
+    height: 6px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+}
+
+
+@media (min-width: 660px) { 
+    .calendar {
+        width: 630px;
+    }
 }
 
 .calendar__week--filled {
@@ -82,8 +110,8 @@ img {
   position: absolute;
   background: #2c3e50;
   opacity: 0;
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   content: " ";
   left: 50%;
   top: 50%;
@@ -106,6 +134,7 @@ calendar__week::last-child {
   border: none;
   outline: none;
   border-bottom: 2px solid #2c3e50;
+  border-radius: 0;
   padding: 0;
   margin: 0;
   position: relative;
@@ -122,6 +151,7 @@ calendar__week::last-child {
 
 .input--day {
   width: 37px;
+  text-align: right;
 }
 
 .dropdown {
@@ -185,4 +215,23 @@ calendar__week::last-child {
 .dropdown__item:hover {
   font-weight: bold;
   transform: scale(1.05);
+}
+
+@media (max-width: 930px) {
+  .input,
+  .dropdown {
+    font-size: 20px;
+  }
+  .input--year {
+    width: 56px;
+  }
+
+  .input--day {
+    width: 28px;
+  }
+
+  .dropdown__item { 
+    font-size: 16px;
+    padding: 0 10px;
+  }
 }
