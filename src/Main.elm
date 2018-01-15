@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Date exposing (Date)
 import Task
-import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -18,6 +17,13 @@ type alias Week =
     }
 
 
+type alias MonthInfo =
+    { title : String
+    , month : Date.Month
+    , number : Int
+    }
+
+
 type alias Model =
     { yearsCount : Int
     , birthYear : Maybe Int
@@ -27,12 +33,6 @@ type alias Model =
     , dateNow : Maybe Date
     , dropdownModel : Dropdown.Model
     }
-
-
-weekList : Int -> List Week
-weekList year =
-    List.map (\x -> Week x False)
-        (List.range 1 (year * weekInYear))
 
 
 init : ( Model, Cmd Msg )
@@ -49,46 +49,84 @@ init =
     )
 
 
+weekList : Int -> List Week
+weekList year =
+    List.map (\x -> Week x False)
+        (List.range 1 (year * weekInYear))
+
+
 weekInYear : Int
 weekInYear =
     52
 
 
-months : List ( String, Date.Month )
+months : List MonthInfo
 months =
-    [ ( "January", Date.Jan )
-    , ( "February", Date.Feb )
-    , ( "March", Date.Mar )
-    , ( "April", Date.Apr )
-    , ( "May", Date.May )
-    , ( "June", Date.Jun )
-    , ( "July", Date.Jul )
-    , ( "August", Date.Aug )
-    , ( "September", Date.Sep )
-    , ( "October", Date.Oct )
-    , ( "November", Date.Nov )
-    , ( "December", Date.Dec )
+    [ { title = "January"
+      , month = Date.Jan
+      , number = 1
+      }
+    , { title = "February"
+      , month = Date.Feb
+      , number = 2
+      }
+    , { title = "March"
+      , month = Date.Mar
+      , number = 3
+      }
+    , { title = "April"
+      , month = Date.Apr
+      , number = 4
+      }
+    , { title = "May"
+      , month = Date.May
+      , number = 5
+      }
+    , { title = "June"
+      , month = Date.Jun
+      , number = 6
+      }
+    , { title = "July"
+      , month = Date.Jul
+      , number = 7
+      }
+    , { title = "August"
+      , month = Date.Aug
+      , number = 8
+      }
+    , { title = "September"
+      , month = Date.Sep
+      , number = 9
+      }
+    , { title = "October"
+      , month = Date.Oct
+      , number = 10
+      }
+    , { title = "November"
+      , month = Date.Nov
+      , number = 11
+      }
+    , { title = "December"
+      , month = Date.Dec
+      , number = 12
+      }
     ]
 
-monthForList = months
-    |> List.map (\month -> (Tuple.first month, getMonthNow (Tuple.second month)) )
-    |> Dict.fromList
 
-getMonthNow month = 
-    case month of
-        Date.Jan -> 1
-        Date.Feb -> 2
-        Date.Mar -> 3
-        Date.Apr -> 4
-        Date.May -> 5
-        Date.Jun -> 6
-        Date.Jul -> 7
-        Date.Aug -> 8
-        Date.Sep -> 9
-        Date.Oct -> 10
-        Date.Nov -> 11
-        Date.Dec -> 12
-            
+findMonthBy : (MonthInfo -> a) -> a -> Maybe MonthInfo
+findMonthBy access param =
+    months
+        |> List.filter (\m -> (access m) == param)
+        |> List.head
+
+
+nowMonthNumber : Date -> Int
+nowMonthNumber now =
+    now
+        |> Date.month
+        |> findMonthBy .month
+        |> Maybe.map .number
+        |> Maybe.withDefault 0
 
 
 split : Int -> List a -> List (List a)
@@ -99,6 +137,16 @@ split i list =
 
         listHead ->
             listHead :: split i (List.drop i list)
+
+
+countOfWeeks : Model -> Int
+countOfWeeks model =
+    model.yearsCount * weekInYear
+
+
+weeksLeft : Model -> Int
+weeksLeft model =
+    (countOfWeeks model) - model.weeks
 
 
 
@@ -128,7 +176,7 @@ getWeeks now year month day =
             ((Date.year now) - year) * weekInYear
 
         monthWeeks =
-            ((getMonthNow <| Date.month <| now) - month - 1 ) * 4
+            ((nowMonthNumber now) - month - 1) * 4
 
         dayWeeks =
             ((Date.day now) - day) // 7
@@ -172,7 +220,11 @@ update msg model =
             in
                 { model
                     | dropdownModel = dropdownModel
-                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") monthForList)
+                    , birthMonth =
+                        dropdownModel.selectedValue
+                            |> Maybe.withDefault ""
+                            |> findMonthBy .title
+                            |> Maybe.map .number
                 }
                     |> update ShowCalendar
 
@@ -214,7 +266,8 @@ viewDirections =
         [ div [ class "direction direction__week" ] [ text "Weeks" ]
         ]
 
-viewFooter: Html Msg
+
+viewFooter : Html Msg
 viewFooter =
     footer []
         [ p []
@@ -229,7 +282,7 @@ viewFooter =
             ]
         , p []
             [ text "Inspired by this "
-            , a [ href "(https://medium.com/design-productivity/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C-%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8-fac1327d676c)", rel "noopener", target "_blank" ]
+            , a [ href "https://medium.com/design-productivity/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C-%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8-fac1327d676c", rel "noopener", target "_blank" ]
                 [ text "article" ]
             ]
         , p []
@@ -240,6 +293,11 @@ viewFooter =
         ]
 
 
+viewDropDown : Model -> Html Msg
+viewDropDown model =
+    Html.map DropdownMsg (Dropdown.view model.dropdownModel "August" (List.map .title months))
+
+
 view : Model -> Html Msg
 view model =
     div []
@@ -247,14 +305,14 @@ view model =
             [ text ("Imagine that the average life expectancy is ")
             , b [] [ text (toString model.yearsCount) ]
             , text (" years. This is approximately ")
-            , b [] [ text (toString (model.yearsCount * weekInYear)) ]
+            , b [] [ text (toString (countOfWeeks model)) ]
             , text " weeks."
             ]
         , p []
             [ text "You were born "
             , viewField model "30" "input--day" SetBirthDay
             , text " of "
-            , Html.map DropdownMsg (Dropdown.view model.dropdownModel "August" (List.map Tuple.first months))
+            , viewDropDown model
             , text ", "
             , viewField model "1991" "input--year" SetBirthYear
             , text "."
@@ -263,7 +321,7 @@ view model =
             [ text "You've already lived for "
             , b [] [ text (toString model.weeks) ]
             , text " weeks. Left "
-            , b [] [ text (toString <| (model.yearsCount * weekInYear - model.weeks)) ]
+            , b [] [ text (toString <| weeksLeft <| model) ]
             , text " weeks."
             , text "Is it a lot?"
             ]
