@@ -128,7 +128,7 @@ getWeeks now year month day =
             ((Date.year now) - year) * weekInYear
 
         monthWeeks =
-            ((getMonthNow <| Date.month <| now) - month) * 4
+            ((getMonthNow <| Date.month <| now) - month - 1 ) * 4
 
         dayWeeks =
             ((Date.day now) - day) // 7
