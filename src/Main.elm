@@ -54,21 +54,41 @@ weekInYear =
     52
 
 
-months : List ( String, Int )
+months : List ( String, Date.Month )
 months =
-    [ ( "January", 1 )
-    , ( "February", 2 )
-    , ( "March", 3 )
-    , ( "April", 4 )
-    , ( "May", 5 )
-    , ( "June", 6 )
-    , ( "July", 7 )
-    , ( "August", 8 )
-    , ( "September", 9 )
-    , ( "October", 10 )
-    , ( "November", 11 )
-    , ( "December", 12 )
+    [ ( "January", Date.Jan )
+    , ( "February", Date.Feb )
+    , ( "March", Date.Mar )
+    , ( "April", Date.Apr )
+    , ( "May", Date.May )
+    , ( "June", Date.Jun )
+    , ( "July", Date.Jul )
+    , ( "August", Date.Aug )
+    , ( "September", Date.Sep )
+    , ( "October", Date.Oct )
+    , ( "November", Date.Nov )
+    , ( "December", Date.Dec )
     ]
+
+monthForList = months
+    |> List.map (\month -> (Tuple.first month, getMonthNow (Tuple.second month)) )
+    |> Dict.fromList
+
+getMonthNow month = 
+    case month of
+        Date.Jan -> 1
+        Date.Feb -> 2
+        Date.Mar -> 3
+        Date.Apr -> 4
+        Date.May -> 5
+        Date.Jun -> 6
+        Date.Jul -> 7
+        Date.Aug -> 8
+        Date.Sep -> 9
+        Date.Oct -> 10
+        Date.Nov -> 11
+        Date.Dec -> 12
+            
 
 
 split : Int -> List a -> List (List a)
@@ -108,10 +128,10 @@ getWeeks now year month day =
             ((Date.year now) - year) * weekInYear
 
         monthWeeks =
-            (month - 1) * 4
+            ((getMonthNow <| Date.month <| now) - month) * 4
 
         dayWeeks =
-            day // 7
+            ((Date.day now) - day) // 7
     in
         List.foldl (+) 0 [ yearWeeks, monthWeeks, dayWeeks ]
 
@@ -152,7 +172,7 @@ update msg model =
             in
                 { model
                     | dropdownModel = dropdownModel
-                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") (Dict.fromList months))
+                    , birthMonth = (Dict.get (dropdownModel.selectedValue |> Maybe.withDefault "") monthForList)
                 }
                     |> update ShowCalendar
 
